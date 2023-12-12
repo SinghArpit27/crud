@@ -32,7 +32,7 @@ User.belongsTo(Status, {
 
 /***************************  CONTROLLER FUNCTION  ***************************/
 
-// CREATE USER USING MANAGED TRANSACTION FUNCTION
+// CREATE USER USING MANAGED TRANSACTION
 const createUser = async (req, res) => {
     try {
         await sequelize.transaction(async (trans) => {
@@ -93,7 +93,7 @@ const createUser = async (req, res) => {
     }
 };
 
-// USER LOGIN FUNCTION
+// USER LOGIN
 const loginUser = async (req, res) => {
     try {
 
@@ -128,7 +128,7 @@ const loginUser = async (req, res) => {
     }
 }
 
-// RENEW ACCESS TOKEN FUNCTION
+// Re-generate Access Token Token API
 const renewAccessToken = async (req, res) => {
     try {
 
@@ -164,19 +164,15 @@ const renewAccessToken = async (req, res) => {
     }
 }
 
-// GET USERS LIST FUNCTION
+
+// GET ALL USERS LIST
 const getAllUsers = async (req, res) => {
     try {
-
-        const uuid = req.uuid;
-        const adminData = await User.findOne({ where: { uuid: uuid, roleId: roleId.ADMIN } });
-        if (!adminData) {
-            return httpResponse(res, statusCode.UNAUTHORIZED, responseStatus.FAILURE, responseMessage.PERMISSION_DENIED);
-        }
 
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10; // Default page size is 10
         const offset = (page - 1) * pageSize;
+
 
         const userStatus = req.query.userStatus;
         let whereClause = {};
@@ -238,123 +234,7 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-// GET MY PROFILE FUNCTION
-const getMe = async (req, res) => {
-    try {
-
-        const uuid = req.uuid;
-
-        const myData = await User.findOne({
-            where: { uuid: uuid },
-            attributes: ["id", "uuid", "name", "email"],
-            include: [
-                {
-                    model: UserDetails,
-                    attributes: ["id", "uuid", "age", "gender", "address"],
-                    where: { is_deleted: isDeleted.NOT_DELETED }
-                },
-                {
-                    model: Role,
-                    attributes: ["name"],
-                    where: { is_deleted: isDeleted.NOT_DELETED }
-                },
-                {
-                    model: Status,
-                    attributes: ["name"],
-                    where: { is_deleted: isDeleted.NOT_DELETED }
-                }
-            ]
-        });
-
-        if (!myData) {
-            return httpResponse(res, statusCode.NOT_FOUND, responseStatus.FAILURE, responseMessage.GET_MY_PROFILE_FAILURE);
-        }
-
-        httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.GET_MY_PROFILE_SUCCESS, {
-            id: myData.id,
-            uuid: myData.uuid,
-            name: myData.name,
-            email: myData.email,
-            age: myData.user_detail.age,
-            gender: myData.user_detail.gender,
-            address: myData.user_detail.address,
-            role: myData.role.name,
-            status: myData.status.name
-        });
-
-    } catch (error) {
-        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR, error.message);
-    }
-}
-
-// UPDATE USER PROFILE FUNCTION
-const updateProfile = async (req, res) => {
-    const trans = await sequelize.transaction();
-    try {
-
-        const uuid = req.uuid;
-        const userData = await User.findOne({ where: { uuid: uuid } });
-        if (!userData) {
-            return httpResponse(res, statusCode.UNAUTHORIZED, responseStatus.FAILURE, responseMessage.UNAUTHORIZED);
-        }
-
-        const { name, email, age, gender, address } = req.body;
-
-        const updatedUserData = await User.update(
-            { name: name, email: email },
-            { where: { uuid: uuid }, transaction: trans }
-        );
-        if (!updatedUserData) {
-            await trans.rollback(); // Rollback the transaction if the user data is not updated
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.PROFILE_UPDATE_FAILED);
-        }
-
-        const updatedUserDetailsData = await UserDetails.update(
-            { age: age, gender: gender, address: address },
-            { where: { userId: userData.id }, transaction: trans }
-        );
-        if (!updatedUserDetailsData) {
-            await trans.rollback(); // Rollback the transaction if the user details data is not updated
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.PROFILE_UPDATE_FAILED);
-        }
-
-        await trans.commit(); // Commit the transaction if everything is successful
-        httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.PROFILE_UPDATE_SUCCES);
-
-
-    } catch (error) {
-        await trans.rollback(); // Rollback the transaction if there's any error
-        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR, error.message);
-    }
-}
-
-// SOFT DELETE PROFILE FUNCTION
-const softDelete = async (req, res) => {
-    try {
-
-        const uuid = req.uuid;
-        const userData = await User.findOne({ where: { uuid: uuid, statusId: statusId.ACTIVE } });
-        if (!userData) {
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.UNAUTHORIZED);
-        }
-
-        const updatedUserData = await User.update(
-            { statusId: statusId.INACTIVE },
-            { where: { uuid: uuid } }
-        );
-        if (!updatedUserData) {
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.SOFT_DELETE_FAILURE);
-        }
-
-        httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.SOFT_DELETE_SUCCESS);
-
-    } catch (error) {
-        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR);
-    }
-}
-
-
-// ADD STATIS DATA INTO DB (ROLES & STATUS)
+// Add Static data into DB (Like ROLES & STATUS)
 const addData = async (req, res) => {
     try {
 
@@ -393,8 +273,5 @@ module.exports = {
     createUser,
     loginUser,
     renewAccessToken,
-    getAllUsers,
-    getMe,
-    updateProfile,
-    softDelete
+    getAllUsers
 }
