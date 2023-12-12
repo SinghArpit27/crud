@@ -242,7 +242,40 @@ const getAllUsers = async (req, res) => {
     }
 }
 
+// Add Static data into DB (Like ROLES & STATUS)
+const addData = async (req, res) => {
+    try {
 
+        const { name } = req.body;
+
+        // const roleData = await Role.create({
+        //     uuid: uuidv4(),
+        //     name: name,
+        //     is_deleted: isDeleted.NOT_DELETED
+        // });
+        // if (!roleData) {
+        //     return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.BAD_REQUEST);
+        // }
+        // console.log("===============================================", roleData);
+        // httpResponse(res, statusCode.CREATED, responseStatus.SUCCESS, responseMessage.SUCCESS, "Role added successfully done");
+
+
+        const statusData = await Status.create({
+            uuid: uuidv4(),
+            name: name,
+            is_deleted: isDeleted.NOT_DELETED
+        });
+        if (!statusData) {
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.BAD_REQUEST);
+        }
+        console.log("===============================================", statusData);
+        httpResponse(res, statusCode.CREATED, responseStatus.SUCCESS, responseMessage.SUCCESS, "Status added successfully done");
+
+
+    } catch (error) {
+        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILED, responseMessage.INTERNAL_SERVER_ERROR, error.message);
+    }
+}
 
 module.exports = {
     createUserUT,
@@ -250,38 +283,3 @@ module.exports = {
     loginUser,
     getAllUsers
 }
-
-
-// const addData = async (req, res) => {
-//     try {
-
-//         const { name } = req.body;
-
-//         // const roleData = await Role.create({
-//         //     uuid: uuidv4(),
-//         //     name: name,
-//         //     is_deleted: isDeleted.NOT_DELETED
-//         // });
-//         // if (!roleData) {
-//         //     return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.BAD_REQUEST);
-//         // }
-//         // console.log("===============================================", roleData);
-//         // httpResponse(res, statusCode.CREATED, responseStatus.SUCCESS, responseMessage.SUCCESS, "Role added successfully done");
-
-
-//         const statusData = await Status.create({
-//             uuid: uuidv4(),
-//             name: name,
-//             is_deleted: isDeleted.NOT_DELETED
-//         });
-//         if (!statusData) {
-//             return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.BAD_REQUEST);
-//         }
-//         console.log("===============================================", statusData);
-//         httpResponse(res, statusCode.CREATED, responseStatus.SUCCESS, responseMessage.SUCCESS, "Status added successfully done");
-
-
-//     } catch (error) {
-//         httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILED, responseMessage.INTERNAL_SERVER_ERROR, error.message);
-//     }
-// }
