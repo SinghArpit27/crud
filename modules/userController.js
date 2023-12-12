@@ -332,6 +332,8 @@ const updateProfile = async (req, res) => {
 const softDelete = async (req, res) => {
     try {
 
+        // smlkj
+
         const uuid = req.uuid;
         const userData = await User.findOne({ where: { uuid: uuid, statusId: statusId.ACTIVE } });
         if (!userData) {
