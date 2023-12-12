@@ -31,6 +31,9 @@ const responseMessage = {
     SOFT_DELETE_FAILURE: "failed to delete your account",
     SOFT_DELETE_FAILED_UNAUTHORIZED: "You can't perform",
 
+    USER_DELETED_SUCCESS: "User Deleted Successfully",
+    USER_DELETED_FAILED: "Failed to Delete User",
+
     ACCOUNT_SUSPENDED: "Account Suspended, Contact admin for Activation",
     PERMISSION_DENIED: "This Operation is only perform by Admin",
     INTERNAL_SERVER_ERROR: "Internal Server Error",

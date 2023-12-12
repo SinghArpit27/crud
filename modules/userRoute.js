@@ -27,6 +27,10 @@ router.put('/update-profile', authenticateToken, userController.updateProfile);
 // SOFT DELETE MY PROFILE
 router.put('/delete-profile', authenticateToken, userController.softDelete);
 
-// router.post('/add-static', userController.addData);
+// PERMANENT DELETE USER ROUTE
+router.delete('/delete-user', authenticateToken, userController.deleteUser);
+
+// ADD STATIC DATA INTO DB LIKE ROLE AND STATUS TABLE
+router.post('/add-static', userController.addData);
 
 module.exports = router;

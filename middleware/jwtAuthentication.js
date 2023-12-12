@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const createAccessToken = async (uuid) => {
     try {
         // console.log(process.env.JWT_SECRET);
-        const token = await jwt.sign({ uuid: uuid }, process.env.ACCESS_JWT_SECRET, { expiresIn: '30m' });
+        const token = await jwt.sign({ uuid: uuid }, process.env.ACCESS_JWT_SECRET, { expiresIn: '30h' });
         return token;
 
     } catch (error) {
@@ -16,7 +16,7 @@ const createAccessToken = async (uuid) => {
 const createRefreshToken = async (uuid) => {
     try {
         // console.log(process.env.JWT_SECRET);
-        const token = await jwt.sign({ uuid: uuid }, process.env.REFRESH_JWT_SECRET, { expiresIn: '2h' });
+        const token = await jwt.sign({ uuid: uuid }, process.env.REFRESH_JWT_SECRET, { expiresIn: '222h' });
         return token;
 
     } catch (error) {

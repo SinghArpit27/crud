@@ -213,6 +213,7 @@ const getAllUsers = async (req, res) => {
 
         const responseData = rows.map((user) => ({
             id: user.id,
+            uuid: user.uuid,
             name: user.name,
             email: user.email,
             age: user.user_detail ? user.user_detail.age : null,
@@ -332,12 +333,10 @@ const updateProfile = async (req, res) => {
 const softDelete = async (req, res) => {
     try {
 
-        // smlkj
-
         const uuid = req.uuid;
         const userData = await User.findOne({ where: { uuid: uuid, statusId: statusId.ACTIVE } });
         if (!userData) {
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.UNAUTHORIZED);
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.SOFT_DELETE_FAILED_UNAUTHORIZED);
         }
 
         const updatedUserData = await User.update(
@@ -355,6 +354,47 @@ const softDelete = async (req, res) => {
     }
 }
 
+// PERMANENT DELETE USER FUNCTION
+const deleteUser = async (req, res) => {
+    const trans = await sequelize.transaction();
+    try {
+
+        const uuid = req.uuid;
+        const user_uuid = req.query.user_uuid;
+        const adminData = await User.findOne({ where: { uuid: uuid, roleId: roleId.ADMIN } });
+        if (!adminData) {
+            return httpResponse(res, statusCode.UNAUTHORIZED, responseStatus.FAILURE, responseMessage.PERMISSION_DENIED);
+        }
+
+        const userData = await User.findOne({ where: { uuid: user_uuid } });
+        if (!userData) {
+            return httpResponse(res, statusCode.NOT_FOUND, responseStatus.FAILURE, responseMessage.NOT_FOUND);
+        }
+
+        const userDetailsDeletedData = await UserDetails.destroy(
+            { where: { userId: userData.id }, transaction: trans }
+        );
+        if (!userDetailsDeletedData) {
+            await trans.rollback();
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.USER_DELETED_FAILED);
+        }
+
+        const userDeletedData = await User.destroy(
+            { where: { uuid: user_uuid }, transaction: trans }
+        );
+        if (!userDeletedData) {
+            await trans.rollback();
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.USER_DELETED_FAILED);
+        }
+
+        await trans.commit();
+        httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.USER_DELETED_SUCCESS);
+
+    } catch (error) {
+        await trans.rollback();
+        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR, error.message);
+    }
+}
 
 // ADD STATIS DATA INTO DB (ROLES & STATUS)
 const addData = async (req, res) => {
@@ -392,11 +432,13 @@ const addData = async (req, res) => {
 }
 
 module.exports = {
+    addData,
     createUser,
     loginUser,
     renewAccessToken,
     getAllUsers,
     getMe,
     updateProfile,
-    softDelete
+    softDelete,
+    deleteUser
 }
