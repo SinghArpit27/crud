@@ -7,6 +7,8 @@ const hashPassword = require('../helper/hashPassword');
 const comparePassword = require('../helper/comparePassword');
 const { createAccessToken, createRefreshToken } = require('../middleware/jwtAuthentication');
 const jwt = require('jsonwebtoken');
+const passwordGenerator = require('../helper/passwordGenerator');
+const { forgetPasswordMail, changePasswordMail } = require('../helper/mailService');
 const User = db.users;
 const Role = db.roles;
 const Status = db.status;
@@ -163,6 +165,84 @@ const renewAccessToken = async (req, res) => {
         httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR, error.message);
     }
 }
+
+// FORGET PASSWORD FUNCTION FOR USER'S
+const forgetPassword = async (req, res) => {
+    try {
+
+        const email = req.body.email;
+
+        const userData = await User.findOne({ where: { email: email, roleId: roleId.USER } });
+        if (!userData) {
+            return httpResponse(res, statusCode.NOT_FOUND, responseStatus.FAILURE, responseMessage.EMAIL_NOT_FOUND);
+        }
+
+        if (userData.statusId === statusId.INACTIVE) {
+            return httpResponse(res, statusCode.UNAUTHORIZED, responseStatus.FAILURE, responseMessage.ACCOUNT_SUSPENDED);
+        }
+
+        const password = passwordGenerator(userData.name);
+
+        const passwordSalt = parseInt(process.env.SALT_ROUNDS);
+        const hashedPassword = await hashPassword(password, passwordSalt);
+
+        const updatedUserData = await User.update(
+            { password: hashedPassword },
+            { where: { uuid: userData.uuid } }
+        );
+
+        if (!updatedUserData) {
+            return httpResponse(res, statusCode.FORBIDDEN, responseStatus.FAILURE, responseMessage.PASSWORD_FORGET_FAILURE);
+        }
+
+        forgetPasswordMail(userData.name, userData.email, password);
+        const RESP_MSG_CONTENT = `Password Forget Successfully, Password send in your Email: ${userData.email}`
+        httpResponse(res, statusCode.OK, responseStatus.SUCCESS, RESP_MSG_CONTENT);
+
+    } catch (error) {
+        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR);
+    }
+}
+
+// CHANGE PASSWORD FUNCTION FOR EVERYONE
+const changePassword = async (req, res) => {
+    try {
+
+        const uuid = req.uuid;
+        const password = req.body.password;
+
+        const userData = await User.findOne({ where: { uuid: uuid } });
+        if (!userData) {
+            return httpResponse(res, statusCode.UNAUTHORIZED, responseStatus.FAILURE, responseMessage.UNAUTHORIZED);
+        }
+
+        const matchPassword = await comparePassword(password, userData.password)
+        if (matchPassword) {
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.OLD_PASSWORD_ERROR);
+        }
+
+        const passwordSalt = parseInt(process.env.SALT_ROUNDS);
+        const hashedPassword = await hashPassword(password, passwordSalt);
+
+        const updatedUserData = await User.update(
+            { password: hashedPassword },
+            { where: { uuid: userData.uuid } }
+        );
+        if (!updatedUserData) {
+            return httpResponse(res, statusCode.FORBIDDEN, responseStatus.FAILURE, responseMessage.PASSWORD_CHANGE_FAILURE);
+        }
+
+        changePasswordMail(userData.name, userData.email, password);
+        httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.PASSWORD_CHANGE_SUCCESS);
+
+    } catch (error) {
+        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR, error.message);
+    }
+}
+
+
+
+
 
 // GET ALL USERS LIST
 const getAllUsers = async (req, res) => {
@@ -431,6 +511,9 @@ module.exports = {
     createUser,
     loginUser,
     renewAccessToken,
+    forgetPassword,
+    changePassword,
+
     getAllUsers,
     getMe,
     updateProfile,

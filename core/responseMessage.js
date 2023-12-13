@@ -30,6 +30,15 @@ const responseMessage = {
     USER_DELETED_FAILED: "Failed to Delete User",
 
 
+    EMAIL_NOT_FOUND: "Email Not Exist",
+    PASSWORD_FORGET_SUCCESS: "Password Forget Successfully, email send to you mail check it out",
+    PASSWORD_FORGET_FAILURE: "Failed to Forget Password",
+
+
+    OLD_PASSWORD_ERROR: "You can't set your old password, please select enter new password",
+    PASSWORD_CHANGE_FAILURE: "Failed to Reset Password",
+    PASSWORD_CHANGE_SUCCESS: "Password Changed successfully done, Credentials send to your Registered Mail",
+
     PERMISSION_DENIED: "This Operation Only done by Admin",
     ACCOUNT_SUSPENDED: "Account Suspended, Contact admin for Activation",
     INTERNAL_SERVER_ERROR: "Internal Server Error",

@@ -13,10 +13,15 @@ const isDeleted = {
     DELETED: 1
 }
 
+const contactAdmin = {
+    EMAIL: 'admin@example.com'
+}
+
 module.exports = {
     roleId,
     statusId,
-    isDeleted
+    isDeleted,
+    contactAdmin
 }
 
 /* 

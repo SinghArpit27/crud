@@ -1,9 +1,12 @@
 const router = require('express').Router();
 const expressValidationResult = require('../helper/validationError');
-const { registerValidation, loginValidation, updateProfileValidation } = require('../middleware/userValidation');
+const authenticateToken = require('../middleware/jwtAuthorization');
+const { registerValidation, loginValidation, updateProfileValidation, forgotPasswordValidation, changePasswordValidation, tokenValidation } = require('../middleware/userValidation');
 const userController = require('./userController');
 
 
+
+/***********************  ADMIN & USER'S ROUTES ***********************/
 
 // Create New User Route
 router.post('/create-user', registerValidation, expressValidationResult, userController.createUser);
@@ -12,10 +15,13 @@ router.post('/create-user', registerValidation, expressValidationResult, userCon
 router.post('/login', loginValidation, expressValidationResult, userController.loginUser);
 
 // RENEW ACCESS TOKEN ROUTE
-router.post('/renewAccessToken', userController.renewAccessToken);
+router.post('/renewAccessToken', tokenValidation, expressValidationResult, userController.renewAccessToken);
 
-// Get Users List Route
-router.get('/users-list', userController.getAllUsers);
+// FORGET PASSWORD
+router.post('/forget-password', forgotPasswordValidation, expressValidationResult, userController.forgetPassword);
+
+// CHANGE PASSWORD
+router.post('/change-password', changePasswordValidation, expressValidationResult, authenticateToken, userController.changePassword);
 
 // GET MY PROFILE ROUTE
 router.get('/my-profile', authenticateToken, userController.getMe);
@@ -25,6 +31,13 @@ router.put('/update-profile', updateProfileValidation, expressValidationResult, 
 
 // SOFT DELETE MY PROFILE
 router.put('/delete-profile', authenticateToken, userController.softDelete);
+
+
+
+/***********************  ADMIN ROUTES ***********************/
+
+// Get Users List Route
+router.get('/users-list', userController.getAllUsers);
 
 // PERMANENT DELETE USER ROUTE
 router.delete('/delete-user', authenticateToken, userController.deleteUser);

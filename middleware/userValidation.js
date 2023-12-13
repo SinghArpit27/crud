@@ -80,6 +80,33 @@ const loginValidation = [
 
 ];
 
+const tokenValidation = [
+    // JWT TOKEN
+    check('token')
+        .notEmpty().withMessage('Token is required')
+]
+
+const forgotPasswordValidation = [
+    // email validation
+    check("email")
+        .notEmpty().withMessage("Enter email")
+        .isLength({ min: 3, max: 200 }).withMessage("Email must be between 3 to 200 characters")
+        .custom(value => {
+            const emailRegex = /^[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
+            if (!emailRegex.test(value)) {
+                throw new Error("Enter a valid email");
+            }
+            return true;
+        }),
+];
+
+const changePasswordValidation = [
+    // Password validation
+    check("password")
+        .notEmpty().withMessage("Enter password")
+        .isLength({ min: 4, max: 100 }).withMessage("Password length must be between 4 to 100 characters"),
+];
+
 const updateProfileValidation = [
     // name validation
     check("name")
@@ -152,5 +179,8 @@ module.exports = {
     registerValidation,
     loginValidation,
     validatePagination,
-    updateProfileValidation
+    updateProfileValidation,
+    forgotPasswordValidation,
+    changePasswordValidation,
+    tokenValidation
 }
