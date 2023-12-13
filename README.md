@@ -57,24 +57,24 @@ Update My Profile: PUT /update-profile
 Soft Delete My Profile: PUT /delete-profile
 
 ### Admin Routes
-Get Users List: GET /users-list
-Permanent Delete User: DELETE /delete-user
-Add Static Data (Roles and Status): POST /add-static
+#### Get Users List: GET /users-list
+#### Permanent Delete User: DELETE /delete-user
+#### Add Static Data (Roles and Status): POST /add-static
 
 
 ## Controllers
 ### Key controller functions include:
-###### Create User: createUser
-###### User Login: loginUser
-###### Renew Access Token: renewAccessToken
-###### Forgot Password: forgetPassword
-###### Change Password: changePassword
-###### Get All Users List: getAllUsers
-###### Get My Profile: getMe
-###### Update User Profile: updateProfile
-###### Soft Delete User Profile: softDelete
-###### Permanent Delete User: deleteUser
-###### Add Static Data: addData
+##### Create User: createUser
+##### User Login: loginUser
+##### Renew Access Token: renewAccessToken
+##### Forgot Password: forgetPassword
+##### Change Password: changePassword
+##### Get All Users List: getAllUsers
+##### Get My Profile: getMe
+##### Update User Profile: updateProfile
+##### Soft Delete User Profile: softDelete
+##### Permanent Delete User: deleteUser
+##### Add Static Data: addData
 
 
 ## Dependencies
