@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const expressValidationResult = require('../helper/validationError');
-const { registerValidation, loginValidation } = require('../middleware/userValidation');
+const { registerValidation, loginValidation, updateProfileValidation } = require('../middleware/userValidation');
 const userController = require('./userController');
 
 
@@ -17,7 +17,14 @@ router.post('/renewAccessToken', userController.renewAccessToken);
 // Get Users List Route
 router.get('/users-list', userController.getAllUsers);
 
+// GET MY PROFILE ROUTE
+router.get('/my-profile', authenticateToken, userController.getMe);
 
+// UPDATE MY PROFILE ROUTE
+router.put('/update-profile', updateProfileValidation, expressValidationResult, authenticateToken, userController.updateProfile);
+
+// SOFT DELETE MY PROFILE
+router.put('/delete-profile', authenticateToken, userController.softDelete);
 
 // PERMANENT DELETE USER ROUTE
 router.delete('/delete-user', authenticateToken, userController.deleteUser);
@@ -26,3 +33,9 @@ router.delete('/delete-user', authenticateToken, userController.deleteUser);
 router.post('/add-static', userController.addData);
 
 module.exports = router;
+
+
+
+
+
+

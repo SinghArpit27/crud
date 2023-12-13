@@ -164,7 +164,6 @@ const renewAccessToken = async (req, res) => {
     }
 }
 
-
 // GET ALL USERS LIST
 const getAllUsers = async (req, res) => {
     try {
@@ -332,7 +331,7 @@ const softDelete = async (req, res) => {
         const uuid = req.uuid;
         const userData = await User.findOne({ where: { uuid: uuid, statusId: statusId.ACTIVE } });
         if (!userData) {
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.SOFT_DELETE_FAILED_UNAUTHORIZED);
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.SOFT_DELETE_FAILED_UNAUTHORIZED);
         }
 
         const updatedUserData = await User.update(
@@ -404,7 +403,7 @@ const addData = async (req, res) => {
         //     is_deleted: isDeleted.NOT_DELETED
         // });
         // if (!roleData) {
-        //     return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.BAD_REQUEST);
+        //     return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.BAD_REQUEST);
         // }
         // console.log("===============================================", roleData);
         // httpResponse(res, statusCode.CREATED, responseStatus.SUCCESS, responseMessage.SUCCESS, "Role added successfully done");
@@ -416,14 +415,14 @@ const addData = async (req, res) => {
             is_deleted: isDeleted.NOT_DELETED
         });
         if (!statusData) {
-            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILED, responseMessage.BAD_REQUEST);
+            return httpResponse(res, statusCode.BAD_REQUEST, responseStatus.FAILURE, responseMessage.BAD_REQUEST);
         }
         console.log("===============================================", statusData);
         httpResponse(res, statusCode.CREATED, responseStatus.SUCCESS, responseMessage.SUCCESS, "Status added successfully done");
 
 
     } catch (error) {
-        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILED, responseMessage.INTERNAL_SERVER_ERROR, error.message);
+        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR, error.message);
     }
 }
 
