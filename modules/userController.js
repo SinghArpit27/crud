@@ -32,7 +32,7 @@ User.belongsTo(Status, {
 
 /***************************  CONTROLLER FUNCTION  ***************************/
 
-// CREATE USER USING MANAGED TRANSACTION FUNCTION
+// CREATE USER USING MANAGED TRANSACTION
 const createUser = async (req, res) => {
     try {
         await sequelize.transaction(async (trans) => {
@@ -93,7 +93,7 @@ const createUser = async (req, res) => {
     }
 };
 
-// USER LOGIN FUNCTION
+// USER LOGIN
 const loginUser = async (req, res) => {
     try {
 
@@ -128,7 +128,7 @@ const loginUser = async (req, res) => {
     }
 }
 
-// RENEW ACCESS TOKEN FUNCTION
+// Re-generate Access Token Token API
 const renewAccessToken = async (req, res) => {
     try {
 
@@ -164,19 +164,15 @@ const renewAccessToken = async (req, res) => {
     }
 }
 
-// GET USERS LIST FUNCTION
+
+// GET ALL USERS LIST
 const getAllUsers = async (req, res) => {
     try {
-
-        const uuid = req.uuid;
-        const adminData = await User.findOne({ where: { uuid: uuid, roleId: roleId.ADMIN } });
-        if (!adminData) {
-            return httpResponse(res, statusCode.UNAUTHORIZED, responseStatus.FAILURE, responseMessage.PERMISSION_DENIED);
-        }
 
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10; // Default page size is 10
         const offset = (page - 1) * pageSize;
+
 
         const userStatus = req.query.userStatus;
         let whereClause = {};
@@ -440,5 +436,5 @@ module.exports = {
     getMe,
     updateProfile,
     softDelete,
-    deleteUser
+    deleteUser,
 }
