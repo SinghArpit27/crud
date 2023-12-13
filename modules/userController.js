@@ -391,7 +391,7 @@ const deleteUser = async (req, res) => {
     }
 }
 
-// ADD STATIS DATA INTO DB (ROLES & STATUS)
+// ADD STATIC DATA INTO DB (ROLES & STATUS)
 const addData = async (req, res) => {
     try {
 
