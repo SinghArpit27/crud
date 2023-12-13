@@ -240,10 +240,6 @@ const changePassword = async (req, res) => {
     }
 }
 
-
-
-
-
 // GET ALL USERS LIST
 const getAllUsers = async (req, res) => {
     try {
