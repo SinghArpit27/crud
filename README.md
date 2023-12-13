@@ -10,7 +10,7 @@ This Node.js application uses the Express.js framework and Sequelize ORM to crea
 The application uses Sequelize ORM to interact with a relational database. Ensure that you have a relational database (e.g., MySQL, PostgreSQL) set up.
 
 
-## Configure the database connection in the .env file:
+### Configure the database connection in the .env file:
 DB_NAME=your_database_name
 DB_USERNAME=your_database_username
 DB_PASSWORD=your_database_password
@@ -45,8 +45,8 @@ The server will start running on the specified port, and you should see a messag
 The app.js file is the entry point for the application. It configures middleware, sets up the database connection, and defines the routes.
 
 
-### API Endpoints
-## User & Admin Routes
+## API Endpoints
+### User & Admin Routes
 Create New User: POST /create-user
 User Login: POST /login
 Renew Access Token: POST /renewAccessToken
@@ -56,14 +56,14 @@ Get My Profile: GET /my-profile
 Update My Profile: PUT /update-profile
 Soft Delete My Profile: PUT /delete-profile
 
-## Admin Routes
+### Admin Routes
 Get Users List: GET /users-list
 Permanent Delete User: DELETE /delete-user
 Add Static Data (Roles and Status): POST /add-static
 
 
-### Controllers
-## Key controller functions include:
+## Controllers
+### Key controller functions include:
 Create User: createUser
 User Login: loginUser
 Renew Access Token: renewAccessToken
@@ -77,7 +77,7 @@ Permanent Delete User: deleteUser
 Add Static Data: addData
 
 
-### Dependencies
+## Dependencies
 bcrypt: Library for hashing passwords.
 body-parser: Middleware for parsing incoming request bodies.
 dotenv: Loads environment variables from a .env file.
@@ -90,5 +90,5 @@ nodemon: Development utility that monitors for changes and automatically restart
 sequelize: Promise-based ORM for Node.js.
 
 
-### Conclusion
+## Conclusion
 This README provides an overview of the Node.js user management system using Express.js and Sequelize. Refer to the code and documentation for detailed implementation and customization.
