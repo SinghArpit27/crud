@@ -78,16 +78,16 @@ Add Static Data (Roles and Status): POST /add-static
 
 
 ## Dependencies
-bcrypt: Library for hashing passwords.
-body-parser: Middleware for parsing incoming request bodies.
-dotenv: Loads environment variables from a .env file.
-express: Web application framework for Node.js.
-express-validator: Middleware for request validation.
-jsonwebtoken: Library for handling JSON Web Tokens (JWT).
-mysql2: MySQL database driver for Node.js.
-nodemailer: Library for sending emails.
-nodemon: Development utility that monitors for changes and automatically restarts the server.
-sequelize: Promise-based ORM for Node.js.
+##### bcrypt: Library for hashing passwords.
+##### body-parser: Middleware for parsing incoming request bodies.
+##### dotenv: Loads environment variables from a .env file.
+##### express: Web application framework for Node.js.
+##### express-validator: Middleware for request validation.
+##### jsonwebtoken: Library for handling JSON Web Tokens (JWT).
+##### mysql2: MySQL database driver for Node.js.
+##### nodemailer: Library for sending emails.
+##### nodemon: Development utility that monitors for changes and automatically restarts the server.
+##### sequelize: Promise-based ORM for Node.js.
 
 
 ## Conclusion
