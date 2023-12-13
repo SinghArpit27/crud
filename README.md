@@ -26,10 +26,10 @@ The dbConnection.js file contains the Sequelize database connection setup. The a
 ### Database Models
 The application uses Sequelize to define models for the database. Each model corresponds to a database table:
 
-User Model: userModel.js
-Role Model: roleModel.js
-Status Model: statusModel.js
-UserDetails Model: userDetailsModel.js
+##### User Model: userModel.js
+##### Role Model: roleModel.js
+##### Status Model: statusModel.js
+##### UserDetails Model: userDetailsModel.js
 
 
 ### Install Dependencies:
@@ -47,23 +47,26 @@ The app.js file is the entry point for the application. It configures middleware
 
 ## API Endpoints
 ### User & Admin Routes
-Create New User: POST /create-user
-User Login: POST /login
-Renew Access Token: POST /renewAccessToken
-Forgot Password: POST /forget-password
-Change Password: POST /change-password
-Get My Profile: GET /my-profile
-Update My Profile: PUT /update-profile
-Soft Delete My Profile: PUT /delete-profile
+
+##### Create New User: POST /create-user
+##### User Login: POST /login
+##### Renew Access Token: POST /renewAccessToken
+##### Forgot Password: POST /forget-password
+##### Change Password: POST /change-password
+##### Get My Profile: GET /my-profile
+##### Update My Profile: PUT /update-profile
+##### Soft Delete My Profile: PUT /delete-profile
 
 ### Admin Routes
-#### Get Users List: GET /users-list
-#### Permanent Delete User: DELETE /delete-user
-#### Add Static Data (Roles and Status): POST /add-static
+
+##### Get Users List: GET /users-list
+##### Permanent Delete User: DELETE /delete-user
+##### Add Static Data (Roles and Status): POST /add-static
 
 
 ## Controllers
 ### Key controller functions include:
+
 ##### Create User: createUser
 ##### User Login: loginUser
 ##### Renew Access Token: renewAccessToken
@@ -78,6 +81,7 @@ Soft Delete My Profile: PUT /delete-profile
 
 
 ## Dependencies
+
 ##### bcrypt: Library for hashing passwords.
 ##### body-parser: Middleware for parsing incoming request bodies.
 ##### dotenv: Loads environment variables from a .env file.
