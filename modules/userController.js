@@ -14,6 +14,8 @@ const Role = db.roles;
 const Status = db.status;
 const sequelize = db.sequelize;
 const UserDetails = db.userDetails;
+const { Op } = require("sequelize");
+const cron = require('node-cron');
 
 
 /***************************  ASSOCIATION  ***************************/
@@ -502,6 +504,78 @@ const addData = async (req, res) => {
     }
 }
 
+// GET LATEST CREATED USERS IN A WEEK
+const getLatestUsers = async (req, res) => {
+    try {
+
+        cron.schedule('* * * * * *', async () => {
+            const backDate = 24 * 7;
+            const startDate = new Date(new Date() - backDate * 60 * 60 * 1000);
+            const currentDate = new Date();
+
+
+            const { rows, count } = await User.findAndCountAll({
+                attributes: ["id", "uuid", "name", "email", "updatedAt"],
+                // where: seWhereClause,
+                where: {
+                    updatedAt: {
+                        [Op.lt]: currentDate,
+                        [Op.gt]: startDate
+                    },
+                },
+                include: [
+                    {
+                        model: UserDetails,
+                        attributes: ["address", "age", "gender"],
+                        where: { is_deleted: isDeleted.NOT_DELETED }
+                    },
+                    {
+                        model: Role,
+                        attributes: ["name"],
+                        where: { is_deleted: isDeleted.NOT_DELETED }
+                    },
+                    {
+                        model: Status,
+                        attributes: ["name"],
+                        where: { is_deleted: isDeleted.NOT_DELETED }
+                    }
+                ]
+            });
+            if (!rows) {
+                return httpResponse(res, statusCode.FORBIDDEN, responseStatus.FAILURE, responseMessage.GET_USERS_LIST_FAILED);
+            }
+
+            const responseData = rows.map((user) => ({
+                id: user.id,
+                uuid: user.uuid,
+                name: user.name,
+                email: user.email,
+                age: user.user_detail ? user.user_detail.age : null,
+                gender: user.user_detail ? user.user_detail.gender : null,
+                address: user.user_detail ? user.user_detail.address : null,
+                role: user.role ? user.role.name : null,
+                status: user.status ? user.status.name : null,
+            }));
+
+            console.log("\n\n==================\n", "CRON JOB\n Users Count: ", count, "\n===================\n\n")
+            httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.GET_USERS_LIST_SUCCESS, {
+                Users: responseData,
+                Count: count
+            });
+
+        });
+
+    } catch (error) {
+        httpResponse(res, statusCode.INTERNAL_SERVER_ERROR, responseStatus.FAILURE, responseMessage.INTERNAL_SERVER_ERROR);
+    }
+}
+
+
+
+
+
+
+
 module.exports = {
     addData,
     createUser,
@@ -515,4 +589,5 @@ module.exports = {
     updateProfile,
     softDelete,
     deleteUser,
+    getLatestUsers
 }

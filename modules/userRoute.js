@@ -45,6 +45,9 @@ router.delete('/delete-user', authenticateToken, userController.deleteUser);
 // ADD STATIC DATA INTO DB LIKE ROLE AND STATUS TABLE
 router.post('/add-static', userController.addData);
 
+// GET LATEST UPDATED USER LIST
+router.get('/latest-updated-users', authenticateToken, userController.getLatestUsers);
+
 module.exports = router;
 
 
