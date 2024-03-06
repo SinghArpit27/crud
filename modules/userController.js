@@ -509,10 +509,10 @@ const getLatestUsers = async (req, res) => {
     try {
 
         cron.schedule('* * * * * *', async () => {
-            const backDate = 24 * 7;
+
+            const backDate = 24 * 10;
             const startDate = new Date(new Date() - backDate * 60 * 60 * 1000);
             const currentDate = new Date();
-
 
             const { rows, count } = await User.findAndCountAll({
                 attributes: ["id", "uuid", "name", "email", "updatedAt"],
@@ -557,7 +557,7 @@ const getLatestUsers = async (req, res) => {
                 status: user.status ? user.status.name : null,
             }));
 
-            console.log("\n\n==================\n", "CRON JOB\n Users Count: ", count, "\n===================\n\n")
+            console.log("\n\n===================\n", "CRON JOB\n Users Count: ", count, "\n===================\n\n")
             httpResponse(res, statusCode.OK, responseStatus.SUCCESS, responseMessage.GET_USERS_LIST_SUCCESS, {
                 Users: responseData,
                 Count: count
@@ -571,11 +571,6 @@ const getLatestUsers = async (req, res) => {
 }
 
 
-
-
-
-
-
 module.exports = {
     addData,
     createUser,
@@ -583,7 +578,6 @@ module.exports = {
     renewAccessToken,
     forgetPassword,
     changePassword,
-
     getAllUsers,
     getMe,
     updateProfile,

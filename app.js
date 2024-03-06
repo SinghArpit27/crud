@@ -17,5 +17,5 @@ app.use('/', userRoute);
 
 const port = process.env.PORT;
 app.listen(port, () => {
-    console.log(`server is listening on PORT: ${port}`);
+    console.log(`\n[server]: server is running at http://localhost:${port}`);
 });

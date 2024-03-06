@@ -3,6 +3,20 @@ const expressValidationResult = require('../helper/validationError');
 const authenticateToken = require('../middleware/jwtAuthorization');
 const { registerValidation, loginValidation, updateProfileValidation, forgotPasswordValidation, changePasswordValidation, tokenValidation } = require('../middleware/userValidation');
 const userController = require('./userController');
+const moment = require('moment');
+
+
+
+
+
+router.get("/", (req, res) => {
+    const port = process.env.PORT || 3001;
+    res.send(
+        `CRUD Express Application is running on this Server. Server Datetime: ${moment().format(
+            "MMMM Do YYYY, h:mm:ss a z"
+        )} <br><br> Swagger is running on <a href="http://localhost:${port}/api-docs-v4">http://localhost:${port}/api-docs</a>`
+    );
+});
 
 
 
